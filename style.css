@@ -1,0 +1,349 @@
+/* ============ BASE ============ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f4f4f2;
+  --surface: #ffffff;
+  --text: #222;
+  --muted: #666;
+  --accent: #2c6e63;
+  --radius: 10px;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ============ HEADER ============ */
+.page-header {
+  text-align: center;
+  padding: 3rem 1rem 1.5rem;
+}
+
+.page-header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.page-header p {
+  color: var(--muted);
+}
+
+/* ============ FILTERS ============ */
+.filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0 1rem 2rem;
+}
+
+.filter-btn {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.5rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.filter-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.filter-btn[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ============ GRID ============ */
+.gallery-wrap {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem 2rem;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* desktop: 3 columns */
+  gap: 1.25rem;
+}
+
+/* ============ ITEMS ============ */
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: rise 0.5s ease both;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.thumb {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.gallery-item:hover .thumb img,
+.gallery-item:focus-within .thumb img {
+  transform: scale(1.06);
+}
+
+.gallery-item figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2rem 1rem 0.75rem;
+  color: #fff;
+  font-size: 0.95rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+.gallery-item:hover figcaption,
+.gallery-item:focus-within figcaption {
+  transform: translateY(0);
+}
+
+/* Touch screens have no hover, so captions stay visible */
+@media (hover: none) {
+  .gallery-item figcaption {
+    transform: translateY(0);
+  }
+}
+
+/* Items hidden by filter */
+.gallery-item[hidden] {
+  display: none;
+}
+
+/* ============ LOAD MORE ============ */
+.load-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.load-more {
+  font: inherit;
+  padding: 0.8rem 2rem;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.load-more:hover {
+  transform: translateY(-2px);
+  background: #235a51;
+}
+
+.load-more[hidden] {
+  display: none;
+}
+
+/* ============ LIGHTBOX ============ */
+.lightbox {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: 100vw;
+  max-height: 100vh;
+  width: 100%;
+  height: 100%;
+}
+
+.lightbox::backdrop {
+  background: rgba(0, 0, 0, 0.88);
+  animation: fadeBackdrop 0.25s ease;
+}
+
+@keyframes fadeBackdrop {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lightbox[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lb-figure {
+  max-width: min(1100px, 90vw);
+  text-align: center;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+.lb-figure img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.lb-figure figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.9rem;
+  color: #eee;
+  font-size: 0.95rem;
+}
+
+.lb-count {
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.lb-btn {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.lb-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.lb-close {
+  top: 1rem;
+  right: 1rem;
+}
+
+.lb-prev {
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lb-next {
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lb-prev:hover,
+.lb-next:hover {
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* ============ FOOTER ============ */
+.page-footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* ============ RESPONSIVE ============ */
+/* Tablet: 2 columns */
+@media (max-width: 900px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 560px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .lb-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+
+  .lb-prev,
+  .lb-next {
+    top: auto;
+    bottom: 1rem;
+    transform: none;
+  }
+
+  .lb-prev { left: 1rem; }
+  .lb-next { right: 1rem; }
+
+  .lb-prev:hover,
+  .lb-next:hover {
+    transform: scale(1.08);
+  }
+
+  .lb-figure figcaption {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
